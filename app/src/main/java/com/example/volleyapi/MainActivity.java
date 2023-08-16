@@ -33,17 +33,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listView);
+        loadingPB = findViewById(R.id.idLoading);
 
 
+        getData();
 
+    }
+
+    private void getData() {
+        loadingPB.setVisibility(View.VISIBLE);
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
-
-
-
-
+                loadingPB.setVisibility(View.GONE);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
 
@@ -58,14 +61,15 @@ public class MainActivity extends AppCompatActivity {
                     listView.setAdapter(arrayAdapter);
 
                 } catch (JSONException e) {
+                    loadingPB.setVisibility(View.GONE);
                     throw new RuntimeException(e);
-
                 }
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                loadingPB.setVisibility(View.GONE);
                 Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
