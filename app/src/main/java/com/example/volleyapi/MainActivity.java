@@ -3,8 +3,10 @@ package com.example.volleyapi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -22,8 +24,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> nameList = new ArrayList<>();
-    String url = "https://jsonplaceholder.typicode.com/users";
+    String url = "https://daily-task-server.glitch.me/task/";
     ListView listView;
+    private ProgressBar loadingPB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,19 +34,25 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         listView = findViewById(R.id.listView);
 
+
+
         StringRequest request = new StringRequest(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
 
+
+
+
+
                 try {
                     JSONArray jsonArray = new JSONArray(response);
 
+
                     for (int i = 0; i< jsonArray.length(); i++){
                         JSONObject jsonObject = jsonArray.getJSONObject(i);
-                        String name = jsonObject.getString("name");
+                        String name = jsonObject.getString("text");
                         nameList.add(name);
                     }
-
 
                     ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, nameList);
                     listView.setAdapter(arrayAdapter);
@@ -52,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                     throw new RuntimeException(e);
 
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -59,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         RequestQueue requestQueue  = Volley.newRequestQueue(this);
         requestQueue.add(request);
